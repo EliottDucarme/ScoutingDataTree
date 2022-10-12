@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
 "The HLT objects saved in the tree are the ones matched with the filter names from 2018 HLT menu"
-"DYTreeProducer::SavedFilterCondition should be updated if you want to run it on 2016 or 17!"
+"The C++ module should be updated if you want to run it on 2016 or 17!"
 
 # -- usage: usage: cmsRun ProduceTree.py sampleType=<sample type>
 
@@ -12,13 +12,13 @@ options.register('sampleType',
                   "none", # default value
                   VarParsing.multiplicity.singleton, # singleton or list
                   VarParsing.varType.string,         # string, int, or float
-                  "Sample type defined in DYScouting/TreeProducer/NtuplerArgument.py")
+                  "Sample type defined in ScoutingDataTree/TreeProducer/NtuplerArgument.py")
 
 options.parseArguments()
 
 print "input sample type = ", options.sampleType
 
-from DYScouting.TreeProducer.NtuplerArgument import GetArgument
+from ScoutingDataTree.TreeProducer.NtuplerArgument import GetArgument
 theExampleFile, theGlobalTag, isMC, isMiniAOD = GetArgument( options.sampleType )
 
 print "   [example file] ", theExampleFile
@@ -35,7 +35,7 @@ process.source = cms.Source("PoolSource",
     # lumisToProcess = cms.untracked.VLuminosityBlockRange('258158:1-258158:1786'),
 )
 
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1000))
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(10000))
 
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
 process.GlobalTag.globaltag = theGlobalTag
@@ -68,16 +68,15 @@ process.load("EventFilter.L1TRawToDigi.gtStage2Digis_cfi")
 process.gtStage2Digis.InputLabel = cms.InputTag( "hltFEDSelectorL1" )
 process.load('PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff')
 
-from DYScouting.TreeProducer.L1SeedList import GetL1SeedList
-
-process.DYTree = cms.EDAnalyzer('DYTreeProducer',
-  L1Muon                = cms.untracked.InputTag("gmtStage2Digis", "Muon", "RECO"),
+process.DYTree = cms.EDAnalyzer('ScoutingDataTreeProducer',
+  # L1Muon                = cms.untracked.InputTag("gmtStage2Digis", "Muon", "RECO"),
+  L1Muon                = cms.untracked.InputTag("gmtStage2Digis", "Muon"),
   globalAlgBlk          = cms.untracked.InputTag("gtStage2Digis"),
   l1tAlgBlkInputTag     = cms.InputTag("gtStage2Digis"), # -- for L1TGlobalUtil
   l1tExtBlkInputTag     = cms.InputTag("gtStage2Digis"), # -- for L1TGlobalUtil
   ReadPrescalesFromFile = cms.bool( False ),             # -- for L1TGlobalUtil
   triggerResults        = cms.untracked.InputTag("TriggerResults", "", "HLT"),
-  triggerEvent          = cms.untracked.InputTag("hltTriggerSummaryAOD"), # -- for the trigger objects in AOD: will be skipped if the collection is not available (e.g. RAW)
+  # triggerEvent          = cms.untracked.InputTag("hltTriggerSummaryAOD"), # -- for the trigger objects in AOD: will be skipped if the collection is not available (e.g. RAW)
 
   SCDimuonVtx      = cms.untracked.InputTag("hltScoutingMuonPackerCalo",              "displacedVtx", "HLT"),
   SCPixelVtx       = cms.untracked.InputTag("hltScoutingPrimaryVertexPacker",         "primaryVtx",   "HLT"),
@@ -93,4 +92,6 @@ process.DYTree = cms.EDAnalyzer('DYTreeProducer',
 )
 
 # RAW data tier: RAWtoDigi step is needed to retrieve L1 information
-process.p = cms.Path(process.patTrigger + process.IterL3MuonCandidatesNoVtx + process.gtStage2Digis + process.DYTree)
+# process.p = cms.Path(process.patTrigger + process.IterL3MuonCandidatesNoVtx + process.gtStage2Digis + process.DYTree)
+# process.p = cms.Path(process.gtStage2Digis + process.patTrigger + process.IterL3MuonCandidatesNoVtx + process.DYTree)
+process.p = cms.Path(process.gtStage2Digis + process.DYTree) # -- patTrigger does not works because trigger::TriggerEvent is not available

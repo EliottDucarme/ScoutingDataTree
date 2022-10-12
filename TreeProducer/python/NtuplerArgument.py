@@ -7,18 +7,19 @@ def GetArgument(sampleType):
     isMiniAOD = ''
 
     if sampleType == "ScoutingMuon2018":
-        exampleEDMFile = '/store/data/Run2018A/ScoutingCaloMuon/RAW/v1/000/316/377/00000/6AAB14C9-B058-E811-B4CC-FA163EBBDB1E.root' # -- 9MB with 4114 events
+        # exampleEDMFile = '/store/data/Run2018A/ScoutingCaloMuon/RAW/v1/000/316/377/00000/6AAB14C9-B058-E811-B4CC-FA163EBBDB1E.root' # -- 9MB with 4114 events
+        exampleEDMFile = '/store/data/Run2018D/ScoutingCaloMuon/RAW/v1/000/325/170/00000/29C6126D-C33D-2744-B4E8-92637A8EDE74.root'
         globalTag = '101X_dataRun2_HLT_v7'
         isMC = False
         isMiniAOD = False
 
-    if sampleType == "Data2018_MINIAOD":
+    elif sampleType == "Data2018_MINIAOD":
         exampleEDMFile = '/store/data/Run2018C/SingleMuon/MINIAOD/17Sep2018-v1/270000/CBAACD5A-9EAF-9E46-BC1C-49C2EB361154.root'
         globalTag = '102X_dataRun2_Sep2018Rereco_v1'
         isMC = False
         isMiniAOD = True
 
-    if sampleType == "Data2018Prompt_MINIAOD":
+    elif sampleType == "Data2018Prompt_MINIAOD":
         exampleEDMFile = '/store/data/Run2018C/SingleMuon/MINIAOD/17Sep2018-v1/270000/CBAACD5A-9EAF-9E46-BC1C-49C2EB361154.root'
         globalTag = '102X_dataRun2_Prompt_v11'
         isMC = False

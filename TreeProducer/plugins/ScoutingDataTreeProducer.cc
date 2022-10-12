@@ -68,11 +68,12 @@ private:
   // void Fill_L3MuonNoVtx( const edm::Event& );
   void Fill_SCDimuonVtx( const edm::Event& );
   void Fill_SCPixelVtx( const edm::Event& );
-  void Fill_SCPixelVtxNearMuon( const edm::Event& );
+  void Fill_SCPixelVtxNearMu( const edm::Event& );
   void Fill_SCMuon( const edm::Event& );
   void Fill_SCCaloJet( const edm::Event& );
 
   void SetTrue_HLTBitInfo( const std::string& );
+  void Set_L1BitAndPrescaleInfo();
 
 
   // -- tokens
@@ -81,26 +82,25 @@ private:
   edm::EDGetTokenT< BXVector<GlobalAlgBlk> >      t_globalAlgBlk_;
 
   edm::EDGetTokenT< edm::TriggerResults >         t_triggerResults_;
-  edm::EDGetTokenT< trigger::TriggerEvent >       t_triggerEvent_;
+  // edm::EDGetTokenT< trigger::TriggerEvent >       t_triggerEvent_;
 
-  edm::EDGetTokenT<std::vector<ScoutingVertex> >  t_scoutingVertex_;
-  edm::EDGetTokenT<std::vector<ScoutingVertex> >  t_pixelVertex_;
-  edm::EDGetTokenT<std::vector<ScoutingVertex> >  t_pixelVertexNearMuon_;
+  edm::EDGetTokenT<std::vector<ScoutingVertex> >  t_SCDimuonVtx_;
+  edm::EDGetTokenT<std::vector<ScoutingVertex> >  t_SCPixelVtx_;
+  edm::EDGetTokenT<std::vector<ScoutingVertex> >  t_SCPixelVtxNearMu_;
 
-  edm::EDGetTokenT<std::vector<ScoutingMuon> >    t_scoutingMuon_;
-  edm::EDGetTokenT<std::vector<ScoutingCaloJet> > t_scoutingCaloJet_;
+  edm::EDGetTokenT<std::vector<ScoutingMuon> >    t_SCMuon_;
+  edm::EDGetTokenT<std::vector<ScoutingCaloJet> > t_SCCaloJet_;
 
-  edm::EDGetTokenT< double >  t_caloMETPhi_;
-  edm::EDGetTokenT< double >  t_caloMETPt_;
-  edm::EDGetTokenT< double >  t_rho_;
+  edm::EDGetTokenT< double >  t_SCCaloMETPhi_;
+  edm::EDGetTokenT< double >  t_SCCaloMETPt_;
+  edm::EDGetTokenT< double >  t_SCRho_;
 
 
   // -- variable for L1 information
-  vector< std::string> vec_L1Seed_;
   l1t::L1TGlobalUtil   *L1GtUtils_;
 
   // -- IterL3MuonCandidateNoVtx object
-  edm::EDGetTokenT< std::vector<pat::TriggerObjectStandAlone> > t_trigObj_L3MuonNoVtx_;
+  // edm::EDGetTokenT< std::vector<pat::TriggerObjectStandAlone> > t_trigObj_L3MuonNoVtx_;
 
   // -- debugging switch
   bool debug_ = false;
@@ -174,9 +174,6 @@ private:
   float SCMuon_pt_[arrSize_];
   float SCMuon_eta_[arrSize_];
   float SCMuon_phi_[arrSize_];
-  float SCMuon_px_[arrSize_];
-  float SCMuon_py_[arrSize_];
-  float SCMuon_pz_[arrSize_];
   float SCMuon_charge_[arrSize_];
 
   int SCMuon_nPixelHit_[arrSize_];
@@ -214,12 +211,12 @@ private:
   double SCCaloMET_pt_;
   double SCRho_;
 
-  int nL1Muon_;
-  double L1Muon_pt_[arrSize_];
-  double L1Muon_eta_[arrSize_];
-  double L1Muon_phi_[arrSize_];
-  double L1Muon_charge_[arrSize_];
-  double L1Muon_quality_[arrSize_];
+  // int nL1Muon_;
+  // double L1Muon_pt_[arrSize_];
+  // double L1Muon_eta_[arrSize_];
+  // double L1Muon_phi_[arrSize_];
+  // double L1Muon_charge_[arrSize_];
+  // double L1Muon_quality_[arrSize_];
 
   // int nL3MuonNoVtx_;
   // double L3MuonNoVtx_pt_[arrSize_];
@@ -309,7 +306,7 @@ void ScoutingDataTreeProducer::Init()
   HLT_IsoMu24_ = false;
 
   // -- HLT objects
-  nTrigObj = -999;
+  nTrigObj_ = -999;
   for(Int_t i=0; i<arrSize_; i++) {
     TrigObj_pt[i] = -999;
     TrigObj_eta[i] = -999;
@@ -360,9 +357,6 @@ void ScoutingDataTreeProducer::Init()
     SCMuon_pt_[i] = -999;
     SCMuon_eta_[i] = -999;
     SCMuon_phi_[i] = -999;
-    SCMuon_px_[i] = -999;
-    SCMuon_py_[i] = -999;
-    SCMuon_pz_[i] = -999;
     SCMuon_charge_[i] = -999;
 
     SCMuon_nPixelHit_[i] = -999;
@@ -403,15 +397,15 @@ void ScoutingDataTreeProducer::Init()
   SCCaloMET_pt_ = -999;
   SCRho_ = -999;
 
-  nL1Muon_ = -999;
-  for( int i=0; i<arrSize_; i++)
-  {
-    L1Muon_pt_[i] = -999;
-    L1Muon_eta_[i] = -999;
-    L1Muon_phi_[i] = -999;
-    L1Muon_charge_[i] = -999;
-    L1Muon_quality_[i] = -999;
-  }
+  // nL1Muon_ = -999;
+  // for( int i=0; i<arrSize_; i++)
+  // {
+  //   L1Muon_pt_[i] = -999;
+  //   L1Muon_eta_[i] = -999;
+  //   L1Muon_phi_[i] = -999;
+  //   L1Muon_charge_[i] = -999;
+  //   L1Muon_quality_[i] = -999;
+  // }
 
   // nL3MuonNoVtx_ = -999;
   // for( int i=0; i<arrSize_; i++)
@@ -443,15 +437,15 @@ void ScoutingDataTreeProducer::Make_Branch()
   // ntuple_->Branch("TrigObj_phi", &TrigObj_phi_, "TrigObj_phi[nTrigObj]/F");
 
   ntuple_->Branch("nSCDimuonVtx", &nSCDimuonVtx_, "nSCDimuonVtx/I");
-  ntuple_->Branch("SCDimuonVtx_x", &SCDimuonVtx_x_, "SCDimuonVtx_x[nVtx]/F");
-  ntuple_->Branch("SCDimuonVtx_y", &SCDimuonVtx_y_, "SCDimuonVtx_y[nVtx]/F");
-  ntuple_->Branch("SCDimuonVtx_z", &SCDimuonVtx_z_, "SCDimuonVtx_z[nVtx]/F");
-  ntuple_->Branch("SCDimuonVtx_xErr", &SCDimuonVtx_xErr_, "SCDimuonVtx_xErr[nVtx]/F");
-  ntuple_->Branch("SCDimuonVtx_yErr", &SCDimuonVtx_yErr_, "SCDimuonVtx_yErr[nVtx]/F");
-  ntuple_->Branch("SCDimuonVtx_zErr", &SCDimuonVtx_zErr_, "SCDimuonVtx_zErr[nVtx]/F");
-  ntuple_->Branch("SCDimuonVtx_chi2", &SCDimuonVtx_chi2_, "SCDimuonVtx_chi2[nVtx]/F");
-  ntuple_->Branch("SCDimuonVtx_nDOF", &SCDimuonVtx_nDOF_, "SCDimuonVtx_nDOF[nVtx]/I");
-  ntuple_->Branch("SCDimuonVtx_isValid", &SCDimuonVtx_isValid_, "SCDimuonVtx_isValid[nVtx]/I");
+  ntuple_->Branch("SCDimuonVtx_x", &SCDimuonVtx_x_, "SCDimuonVtx_x[nSCDimuonVtx]/F");
+  ntuple_->Branch("SCDimuonVtx_y", &SCDimuonVtx_y_, "SCDimuonVtx_y[nSCDimuonVtx]/F");
+  ntuple_->Branch("SCDimuonVtx_z", &SCDimuonVtx_z_, "SCDimuonVtx_z[nSCDimuonVtx]/F");
+  ntuple_->Branch("SCDimuonVtx_xErr", &SCDimuonVtx_xErr_, "SCDimuonVtx_xErr[nSCDimuonVtx]/F");
+  ntuple_->Branch("SCDimuonVtx_yErr", &SCDimuonVtx_yErr_, "SCDimuonVtx_yErr[nSCDimuonVtx]/F");
+  ntuple_->Branch("SCDimuonVtx_zErr", &SCDimuonVtx_zErr_, "SCDimuonVtx_zErr[nSCDimuonVtx]/F");
+  ntuple_->Branch("SCDimuonVtx_chi2", &SCDimuonVtx_chi2_, "SCDimuonVtx_chi2[nSCDimuonVtx]/F");
+  ntuple_->Branch("SCDimuonVtx_nDOF", &SCDimuonVtx_nDOF_, "SCDimuonVtx_nDOF[nSCDimuonVtx]/I");
+  ntuple_->Branch("SCDimuonVtx_isValid", &SCDimuonVtx_isValid_, "SCDimuonVtx_isValid[nSCDimuonVtx]/I");
 
 
   ntuple_->Branch("nSCPixelVtx", &nSCPixelVtx_, "nSCPixelVtx/I");
@@ -482,21 +476,18 @@ void ScoutingDataTreeProducer::Make_Branch()
   ntuple_->Branch("SCMuon_pt", &SCMuon_pt_, "SCMuon_pt[nSCMuon]/F");
   ntuple_->Branch("SCMuon_eta", &SCMuon_eta_, "SCMuon_eta[nSCMuon]/F");
   ntuple_->Branch("SCMuon_phi", &SCMuon_phi_, "SCMuon_phi[nSCMuon]/F");
-  ntuple_->Branch("SCMuon_px", &SCMuon_px_, "SCMuon_px[nSCMuon]/F");
-  ntuple_->Branch("SCMuon_py", &SCMuon_py_, "SCMuon_py[nSCMuon]/F");
-  ntuple_->Branch("SCMuon_pz", &SCMuon_pz_, "SCMuon_pz[nSCMuon]/F");
   ntuple_->Branch("SCMuon_charge", &SCMuon_charge_, "SCMuon_charge[nSCMuon]/F");
 
   ntuple_->Branch("SCMuon_normChi2", &SCMuon_normChi2_, "SCMuon_normChi2[nSCMuon]/F");
   ntuple_->Branch("SCMuon_nTrackerLayer", &SCMuon_nTrackerLayer_, "SCMuon_nTrackerLayer[nSCMuon]/I");
   ntuple_->Branch("SCMuon_nPixelHit", &SCMuon_nPixelHit_, "SCMuon_nPixelHit[nSCMuon]/I");
   ntuple_->Branch("SCMuon_nStripHit", &SCMuon_nStripHit_, "SCMuon_nStripHit[nSCMuon]/I");
-  ntuple_->Branch("SCMuon_nSCMuonHit", &SCMuon_nSCMuonHit_, "SCMuon_nSCMuonHit[nSCMuon]/I");
+  ntuple_->Branch("SCMuon_nMuonHit", &SCMuon_nMuonHit_, "SCMuon_nMuonHit[nSCMuon]/I");
   ntuple_->Branch("SCMuon_nMatchedStation", &SCMuon_nMatchedStation_, "SCMuon_nMatchedStation[nSCMuon]/I");
   ntuple_->Branch("SCMuon_dxy", &SCMuon_dxy_, "SCMuon_dxy[nSCMuon]/F");
   ntuple_->Branch("SCMuon_dz",  &SCMuon_dz_,  "SCMuon_dz[nSCMuon]/F");
   ntuple_->Branch("SCMuon_trkIso", &SCMuon_trkIso_, "SCMuon_trkIso[nSCMuon]/F");
-  ntuple_->Branch("SCMuon_vtxIndex", &muon_vtxIndex_);
+  ntuple_->Branch("SCMuon_vtxIndex", &SCMuon_vtxIndex_);
 
 
   ntuple_->Branch("nSCCaloJet", &nSCCaloJet_, "nSCCaloJet/I");
@@ -522,12 +513,12 @@ void ScoutingDataTreeProducer::Make_Branch()
   ntuple_->Branch("SCRho",         &SCRho_,         "SCRho/F");
 
 
-  ntuple_->Branch("nL1Muon",        &nL1Muon_,        "nL1Muon/I");
-  ntuple_->Branch("L1Muon_pt",      &L1Muon_pt_,      "L1Muon_pt[nL1Muon]/F");
-  ntuple_->Branch("L1Muon_eta",     &L1Muon_eta_,     "L1Muon_eta[nL1Muon]/F");
-  ntuple_->Branch("L1Muon_phi",     &L1Muon_phi_,     "L1Muon_phi[nL1Muon]/F");
-  ntuple_->Branch("L1Muon_charge",  &L1Muon_charge_,  "L1Muon_charge[nL1Muon]/F");
-  ntuple_->Branch("L1Muon_quality", &L1Muon_quality_, "L1Muon_quality[nL1Muon]/F");
+  // ntuple_->Branch("nL1Muon",        &nL1Muon_,        "nL1Muon/I");
+  // ntuple_->Branch("L1Muon_pt",      &L1Muon_pt_,      "L1Muon_pt[nL1Muon]/F");
+  // ntuple_->Branch("L1Muon_eta",     &L1Muon_eta_,     "L1Muon_eta[nL1Muon]/F");
+  // ntuple_->Branch("L1Muon_phi",     &L1Muon_phi_,     "L1Muon_phi[nL1Muon]/F");
+  // ntuple_->Branch("L1Muon_charge",  &L1Muon_charge_,  "L1Muon_charge[nL1Muon]/F");
+  // ntuple_->Branch("L1Muon_quality", &L1Muon_quality_, "L1Muon_quality[nL1Muon]/F");
 
   // ntuple_->Branch("nL3MuonNoVtx",        &nL3MuonNoVtx_,        "nL3MuonNoVtx/I");
   // ntuple_->Branch("L3MuonNoVtx_pt",      &L3MuonNoVtx_pt_,      "L3MuonNoVtx_pt[nL3MuonNoVtx]/F");
@@ -580,6 +571,8 @@ void ScoutingDataTreeProducer::Fill_HLT(const edm::Event &iEvent)
 }
 
 void ScoutingDataTreeProducer::SetTrue_HLTBitInfo(const std::string &pathName) {
+  // cout << "[SetTrue_HLTBitInfo] pathName = " << pathName << endl;
+
   // -- check up to "_v": without this, the other triggers can be mixed (e.g. IsoMu24_XX_v triggers -> can be added in IsoMu24)
   if( pathName.find("DST_DoubleMu1_noVtx_CaloScouting_v") != std::string::npos )            DST_DoubleMu1_noVtx_CaloScouting_ = true;
   if( pathName.find("DST_DoubleMu3_noVtx_CaloScouting_Monitoring_v") != std::string::npos ) DST_DoubleMu3_noVtx_CaloScouting_Monitoring_ = true;
@@ -693,9 +686,6 @@ void ScoutingDataTreeProducer::Fill_SCMuon( const edm::Event& iEvent )
     {
       const ScoutingMuon& muon = (*h_SCMuon)[i_mu];
 
-      // muon_px_[i_mu]  = muon.px();
-      // muon_py_[i_mu]  = muon.py();
-      // muon_pz_[i_mu]  = muon.pz();
       SCMuon_pt_[i_mu]  = muon.pt();
       SCMuon_eta_[i_mu] = muon.eta();
       SCMuon_phi_[i_mu] = muon.phi();
@@ -772,35 +762,32 @@ void ScoutingDataTreeProducer::Fill_L1( const edm::Event& iEvent, const edm::Eve
   Set_L1BitAndPrescaleInfo();
 
   // -- L1 muon information
-  edm::Handle<l1t::MuonBxCollection> h_L1Muon;
-  if( iEvent.getByToken(t_L1Muon_, h_L1Muon) )
-  {
-    int _nL1Muon = 0;
-    for(int ibx = h_L1Muon->getFirstBX(); ibx<=h_L1Muon->getLastBX(); ++ibx)
-    {
-      if(ibx != 0) continue; // -- only take when ibx == 0 -- //
-      for(auto it=h_L1Muon->begin(ibx); it!=h_L1Muon->end(ibx); it++)
-      {
-        l1t::MuonRef ref_L1Mu(h_L1Muon, distance(h_L1Muon->begin(h_L1Muon->getFirstBX()), it) );
+  // edm::Handle<l1t::MuonBxCollection> h_L1Muon;
+  // if( iEvent.getByToken(t_L1Muon_, h_L1Muon) )
+  // {
+  //   int _nL1Muon = 0;
+  //   for(int ibx = h_L1Muon->getFirstBX(); ibx<=h_L1Muon->getLastBX(); ++ibx)
+  //   {
+  //     if(ibx != 0) continue; // -- only take when ibx == 0 -- //
+  //     for(auto it=h_L1Muon->begin(ibx); it!=h_L1Muon->end(ibx); it++)
+  //     {
+  //       l1t::MuonRef ref_L1Mu(h_L1Muon, distance(h_L1Muon->begin(h_L1Muon->getFirstBX()), it) );
 
-        L1Muon_pt_[_nL1Muon]      = ref_L1Mu->pt();
-        L1Muon_eta_[_nL1Muon]     = ref_L1Mu->eta();
-        L1Muon_phi_[_nL1Muon]     = ref_L1Mu->phi();
-        L1Muon_charge_[_nL1Muon]  = ref_L1Mu->charge();
-        L1Muon_quality_[_nL1Muon] = ref_L1Mu->hwQual();
+  //       L1Muon_pt_[_nL1Muon]      = ref_L1Mu->pt();
+  //       L1Muon_eta_[_nL1Muon]     = ref_L1Mu->eta();
+  //       L1Muon_phi_[_nL1Muon]     = ref_L1Mu->phi();
+  //       L1Muon_charge_[_nL1Muon]  = ref_L1Mu->charge();
+  //       L1Muon_quality_[_nL1Muon] = ref_L1Mu->hwQual();
 
-        _nL1Muon++;
-      }
-    }
-    nL1Muon_ = _nL1Muon;
-  }
+  //       _nL1Muon++;
+  //     }
+  //   }
+  //   nL1Muon_ = _nL1Muon;
+  // }
 
 }
 
 void ScoutingDataTreeProducer::Set_L1BitAndPrescaleInfo() {
-  bool   L1_DoubleMu_15_7_;
-  bool   L1_DoubleMu4p5_SQ_OS_dR_Max1p2_;
-
   L1GtUtils_->getFinalDecisionByName("L1_DoubleMu_15_7", L1_DoubleMu_15_7_);
   // L1GtUtils_->getPrescaleByName("L1_DoubleMu_15_7",      L1_DoubleMu_15_7_PS_ );
 
