@@ -75,6 +75,8 @@ private:
   void SetTrue_HLTBitInfo( const std::string& );
   void Set_L1BitAndPrescaleInfo();
 
+  void GetMuonIndex_AssociatedToVertex(edm::Event& iEvent, const ScoutingVertex& vtx, int theVtxIndex, int& index1_mu, int& index2_mu);
+
 
   // -- tokens
   edm::EDGetTokenT< l1t::MuonBxCollection >       t_L1Muon_;
@@ -143,6 +145,8 @@ private:
   float SCDimuonVtx_zErr_[arrSize_];
   float SCDimuonVtx_chi2_[arrSize_];
   int   SCDimuonVtx_nDOF_[arrSize_];
+  int   SCDimuonVtx_muonIndex1_[arrSize_];
+  int   SCDimuonVtx_muonIndex2_[arrSize_];
   int   SCDimuonVtx_isValid_[arrSize_];
 
   // -- pixel vertex information from full tracking @ HLT
@@ -327,6 +331,8 @@ void ScoutingDataTreeProducer::Init()
     SCDimuonVtx_zErr_[i] = -999;
     SCDimuonVtx_chi2_[i] = -999;
     SCDimuonVtx_nDOF_[i] = -999;
+    SCDimuonVtx_muonIndex1_[i] = -999;
+    SCDimuonVtx_muonIndex2_[i] = -999;
     SCDimuonVtx_isValid_[i] = 0;
 
     SCPixelVtx_x_[i] = -999;
@@ -445,6 +451,8 @@ void ScoutingDataTreeProducer::Make_Branch()
   ntuple_->Branch("SCDimuonVtx_zErr", &SCDimuonVtx_zErr_, "SCDimuonVtx_zErr[nSCDimuonVtx]/F");
   ntuple_->Branch("SCDimuonVtx_chi2", &SCDimuonVtx_chi2_, "SCDimuonVtx_chi2[nSCDimuonVtx]/F");
   ntuple_->Branch("SCDimuonVtx_nDOF", &SCDimuonVtx_nDOF_, "SCDimuonVtx_nDOF[nSCDimuonVtx]/I");
+  ntuple_->Branch("SCDimuonVtx_muonIndex1", &SCDimuonVtx_muonIndex1_, "SCDimuonVtx_muonIndex1[nSCDimuonVtx]/I");
+  ntuple_->Branch("SCDimuonVtx_muonIndex2", &SCDimuonVtx_muonIndex2_, "SCDimuonVtx_muonIndex2[nSCDimuonVtx]/I");
   ntuple_->Branch("SCDimuonVtx_isValid", &SCDimuonVtx_isValid_, "SCDimuonVtx_isValid[nSCDimuonVtx]/I");
 
 
@@ -603,6 +611,11 @@ void ScoutingDataTreeProducer::Fill_SCDimuonVtx( const edm::Event& iEvent )
       SCDimuonVtx_chi2_[i_vtx]    = SCDimuonVtx.chi2();
       SCDimuonVtx_nDOF_[i_vtx]    = SCDimuonVtx.ndof();
       SCDimuonVtx_isValid_[i_vtx] = SCDimuonVtx.isValidVtx();
+
+      int index1_mu, index2_mu;
+      GetMuonIndex_AssociatedToVertex(iEvent, vtx, i_vtx, index1_mu, index2_mu);
+      SCDimuonVtx_muonIndex1_[i_vtx] = index1_mu;
+      SCDimuonVtx_muonIndex2_[i_vtx] = index2_mu;
 
       _nSCDimuonVtx++;
     }
@@ -793,6 +806,31 @@ void ScoutingDataTreeProducer::Set_L1BitAndPrescaleInfo() {
 
   L1GtUtils_->getFinalDecisionByName("L1_DoubleMu4p5_SQ_OS_dR_Max1p2", L1_DoubleMu4p5_SQ_OS_dR_Max1p2_);
   // L1GtUtils_->getPrescaleByName("L1_DoubleMu4p5_SQ_OS_dR_Max1p2", L1_DoubleMu4p5_SQ_OS_dR_Max1p2_PS_);
+}
+
+void ScoutingDataTreeProducer::GetMuonIndex_AssociatedToVertex(edm::Event& iEvent, const ScoutingVertex& vtx, int theVtxIndex, int& index1_mu, int& index2_mu) {
+  index1_mu = -1;
+  index2_mu = -1;
+
+  edm::Handle< std::vector<ScoutingMuon> > h_SCMuon;
+  iEvent.getByToken( t_SCMuon_, h_SCMuon );
+
+  for(unsigned int i_mu=0; i_mu<h_SCMuon->size(); ++i_mu) {
+    const auto& mu = (*h_SCMuon)[i_mu];
+
+    std::vector<int> vec_vtxIndex = mu.vtxIndx();
+
+    for(int i_vtx : vec_vtxIndex) {
+      if( theVtxIndex == i_vtx ) {
+        if( index1_mu == -1 )      index1_mu = i_mu;
+        else if( index2_mu == -1 ) index2_mu = i_mu;
+        else
+          std::cout << "(Index1_mu, index2_mu) = (" << index1_mu << ", " << index2_mu << "): already filled --> the " << i_mu << "th muon will be ignored" << std::endl;
+
+        if( index1_mu != -1 && index2_mu != -1 ) break; // -- to speed up
+      }
+    } // -- iteration over vertex index associated with the given muon
+  } // -- iteration over muons  
 }
 
 void ScoutingDataTreeProducer::endJob() {}
