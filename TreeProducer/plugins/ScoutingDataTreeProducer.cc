@@ -189,7 +189,6 @@ private:
   float SCMuon_dxy_[arrSize_];
   float SCMuon_dz_[arrSize_];
   float SCMuon_trkIso_[arrSize_];
-  vector< vector<int> > SCMuon_vtxIndex_;
 
   // -- jet information
   int nSCCaloJet_;
@@ -375,7 +374,6 @@ void ScoutingDataTreeProducer::Init()
     SCMuon_dz_[i] = -999;
     SCMuon_trkIso_[i] = -999;
   }
-  SCMuon_vtxIndex_.clear();
 
   // -- jet information
   nSCCaloJet_ = -999;
@@ -495,7 +493,6 @@ void ScoutingDataTreeProducer::Make_Branch()
   ntuple_->Branch("SCMuon_dxy", &SCMuon_dxy_, "SCMuon_dxy[nSCMuon]/F");
   ntuple_->Branch("SCMuon_dz",  &SCMuon_dz_,  "SCMuon_dz[nSCMuon]/F");
   ntuple_->Branch("SCMuon_trkIso", &SCMuon_trkIso_, "SCMuon_trkIso[nSCMuon]/F");
-  ntuple_->Branch("SCMuon_vtxIndex", &SCMuon_vtxIndex_);
 
 
   ntuple_->Branch("nSCCaloJet", &nSCCaloJet_, "nSCCaloJet/I");
@@ -714,9 +711,7 @@ void ScoutingDataTreeProducer::Fill_SCMuon( const edm::Event& iEvent )
       SCMuon_dxy_[i_mu] = muon.dxy();
       SCMuon_dz_[i_mu]  = muon.dz();
 
-      SCMuon_trkIso_[i_mu] = muon.trackIso();
-
-      SCMuon_vtxIndex_.push_back( muon.vtxIndx() );
+      SCMuon_trkIso_[i_mu] = muon.trackIso();      
 
       // cout << "[Scouting muon: isolation] (ECAL, HCAL) = (" << muon.ecalIso() << ", " << muon.hcalIso() << ")" << endl; 
 
