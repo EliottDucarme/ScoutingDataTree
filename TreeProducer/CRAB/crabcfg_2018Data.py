@@ -17,7 +17,8 @@ config.Data.inputDataset = ''
 config.Data.inputDBS = 'global'
 # config.Data.splitting = 'Automatic'
 config.Data.splitting = 'LumiBased'
-config.Data.unitsPerJob = 20
+# config.Data.unitsPerJob = 20 # -- too many jobs ( > 1000)
+config.Data.unitsPerJob = 50
 
 config.Data.publication = False
 # config.Data.ignoreLocality = True
@@ -26,7 +27,7 @@ config.Site.storageSite = 'T2_BE_IIHE'
 
 config.Data.lumiMask = './JSON/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt'
 
-version = 'v1'
+version = 'v02_2nd'
 config.Data.outLFNDirBase = '/store/user/kplee/DYScoutingTree_%s' % version
 
 config.JobType.allowUndistributedCMSSW = True
