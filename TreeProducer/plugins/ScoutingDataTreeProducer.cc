@@ -114,8 +114,8 @@ private:
   static const int arrSize_ = 2000;
 
   // --  event informations
-  int run_;
-  int luminosityBlock_;
+  unsigned int run_;
+  unsigned int luminosityBlock_;
   unsigned long long event_;
 
   // -- L1 flags
@@ -130,13 +130,13 @@ private:
 
   // -- HLT objects
   // -- use float (instead of double) to sync. with nanoAOD MC
-  int   nTrigObj_;
+  unsigned int   nTrigObj_;
   float TrigObj_pt[arrSize_];
   float TrigObj_eta[arrSize_];
   float TrigObj_phi[arrSize_];
 
   // -- dimuon vertex information (@ HLT)
-  int   nSCDimuonVtx_;
+  unsigned int   nSCDimuonVtx_;
   float SCDimuonVtx_x_[arrSize_];
   float SCDimuonVtx_y_[arrSize_];
   float SCDimuonVtx_z_[arrSize_];
@@ -147,10 +147,10 @@ private:
   int   SCDimuonVtx_nDOF_[arrSize_];
   int   SCDimuonVtx_muonIndex1_[arrSize_];
   int   SCDimuonVtx_muonIndex2_[arrSize_];
-  int   SCDimuonVtx_isValid_[arrSize_];
+  bool   SCDimuonVtx_isValid_[arrSize_];
 
   // -- pixel vertex information from full tracking @ HLT
-  int   nSCPixelVtx_;
+  unsigned int   nSCPixelVtx_;
   float SCPixelVtx_x_[arrSize_];
   float SCPixelVtx_y_[arrSize_];
   float SCPixelVtx_z_[arrSize_];
@@ -162,7 +162,7 @@ private:
   int   SCPixelVtx_isValid_[arrSize_];
 
   // -- pixel vertex made by tracks near L3 muons @ HLT
-  int nSCPixelVtxNearMu_;
+  unsigned int nSCPixelVtxNearMu_;
   float SCPixelVtxNearMu_x_[arrSize_];
   float SCPixelVtxNearMu_y_[arrSize_];
   float SCPixelVtxNearMu_z_[arrSize_];
@@ -174,7 +174,7 @@ private:
   int   SCPixelVtxNearMu_isValid_[arrSize_];
 
   // -- muon information (scouting)
-  int nSCMuon_;
+  unsigned int nSCMuon_;
   float SCMuon_pt_[arrSize_];
   float SCMuon_eta_[arrSize_];
   float SCMuon_phi_[arrSize_];
@@ -192,7 +192,7 @@ private:
   float SCMuon_trkIso_[arrSize_];
 
   // -- jet information
-  int nSCCaloJet_;
+  unsigned int nSCCaloJet_;
   double SCCaloJet_pt_[arrSize_];
   double SCCaloJet_eta_[arrSize_];
   double SCCaloJet_phi_[arrSize_];
@@ -425,8 +425,8 @@ void ScoutingDataTreeProducer::Init()
 
 void ScoutingDataTreeProducer::Make_Branch()
 {
-  ntuple_->Branch("run",&run_,"run/I");
-  ntuple_->Branch("luminosityBlock",&luminosityBlock_,"luminosityBlock/I");
+  ntuple_->Branch("run",&run_,"run/i");
+  ntuple_->Branch("luminosityBlock",&luminosityBlock_,"luminosityBlock/i");
   ntuple_->Branch("event",&event_,"event/l"); // -- unsigned long long -- //
 
   ntuple_->Branch("L1_DoubleMu_15_7",               &L1_DoubleMu_15_7_,               "L1_DoubleMu_15_7/O");
@@ -442,7 +442,7 @@ void ScoutingDataTreeProducer::Make_Branch()
   // ntuple_->Branch("TrigObj_eta", &TrigObj_eta_, "TrigObj_eta[nTrigObj]/F");
   // ntuple_->Branch("TrigObj_phi", &TrigObj_phi_, "TrigObj_phi[nTrigObj]/F");
 
-  ntuple_->Branch("nSCDimuonVtx", &nSCDimuonVtx_, "nSCDimuonVtx/I");
+  ntuple_->Branch("nSCDimuonVtx", &nSCDimuonVtx_, "nSCDimuonVtx/i");
   ntuple_->Branch("SCDimuonVtx_x", &SCDimuonVtx_x_, "SCDimuonVtx_x[nSCDimuonVtx]/F");
   ntuple_->Branch("SCDimuonVtx_y", &SCDimuonVtx_y_, "SCDimuonVtx_y[nSCDimuonVtx]/F");
   ntuple_->Branch("SCDimuonVtx_z", &SCDimuonVtx_z_, "SCDimuonVtx_z[nSCDimuonVtx]/F");
@@ -453,10 +453,10 @@ void ScoutingDataTreeProducer::Make_Branch()
   ntuple_->Branch("SCDimuonVtx_nDOF", &SCDimuonVtx_nDOF_, "SCDimuonVtx_nDOF[nSCDimuonVtx]/I");
   ntuple_->Branch("SCDimuonVtx_muonIndex1", &SCDimuonVtx_muonIndex1_, "SCDimuonVtx_muonIndex1[nSCDimuonVtx]/I");
   ntuple_->Branch("SCDimuonVtx_muonIndex2", &SCDimuonVtx_muonIndex2_, "SCDimuonVtx_muonIndex2[nSCDimuonVtx]/I");
-  ntuple_->Branch("SCDimuonVtx_isValid", &SCDimuonVtx_isValid_, "SCDimuonVtx_isValid[nSCDimuonVtx]/I");
+  ntuple_->Branch("SCDimuonVtx_isValid", &SCDimuonVtx_isValid_, "SCDimuonVtx_isValid[nSCDimuonVtx]/O");
 
 
-  ntuple_->Branch("nSCPixelVtx", &nSCPixelVtx_, "nSCPixelVtx/I");
+  ntuple_->Branch("nSCPixelVtx", &nSCPixelVtx_, "nSCPixelVtx/i");
   ntuple_->Branch("SCPixelVtx_x", &SCPixelVtx_x_, "SCPixelVtx_x[nSCPixelVtx]/F");
   ntuple_->Branch("SCPixelVtx_y", &SCPixelVtx_y_, "SCPixelVtx_y[nSCPixelVtx]/F");
   ntuple_->Branch("SCPixelVtx_z", &SCPixelVtx_z_, "SCPixelVtx_z[nSCPixelVtx]/F");
@@ -468,7 +468,7 @@ void ScoutingDataTreeProducer::Make_Branch()
   ntuple_->Branch("SCPixelVtx_isValid", &SCPixelVtx_isValid_, "SCPixelVtx_isValid[nSCPixelVtx]/I");
 
 
-  ntuple_->Branch("nSCPixelVtxNearMu", &nSCPixelVtxNearMu_, "nSCPixelVtxNearMu/I");
+  ntuple_->Branch("nSCPixelVtxNearMu", &nSCPixelVtxNearMu_, "nSCPixelVtxNearMu/i");
   ntuple_->Branch("SCPixelVtxNearMu_x", &SCPixelVtxNearMu_x_, "SCPixelVtxNearMu_x[nSCPixelVtxNearMu]/F");
   ntuple_->Branch("SCPixelVtxNearMu_y", &SCPixelVtxNearMu_y_, "SCPixelVtxNearMu_y[nSCPixelVtxNearMu]/F");
   ntuple_->Branch("SCPixelVtxNearMu_z", &SCPixelVtxNearMu_z_, "SCPixelVtxNearMu_z[nSCPixelVtxNearMu]/F");
@@ -480,7 +480,7 @@ void ScoutingDataTreeProducer::Make_Branch()
   ntuple_->Branch("SCPixelVtxNearMu_isValid", &SCPixelVtxNearMu_isValid_, "SCPixelVtxNearMu_isValid[nSCPixelVtxNearMu]/I");
 
 
-  ntuple_->Branch("nSCMuon", &nSCMuon_, "nSCMuon/I");
+  ntuple_->Branch("nSCMuon", &nSCMuon_, "nSCMuon/i");
   ntuple_->Branch("SCMuon_pt", &SCMuon_pt_, "SCMuon_pt[nSCMuon]/F");
   ntuple_->Branch("SCMuon_eta", &SCMuon_eta_, "SCMuon_eta[nSCMuon]/F");
   ntuple_->Branch("SCMuon_phi", &SCMuon_phi_, "SCMuon_phi[nSCMuon]/F");
@@ -498,7 +498,7 @@ void ScoutingDataTreeProducer::Make_Branch()
   ntuple_->Branch("SCMuon_trkIso", &SCMuon_trkIso_, "SCMuon_trkIso[nSCMuon]/F");
 
 
-  ntuple_->Branch("nSCCaloJet", &nSCCaloJet_, "nSCCaloJet/I");
+  ntuple_->Branch("nSCCaloJet", &nSCCaloJet_, "nSCCaloJet/i");
   ntuple_->Branch("SCCaloJet_pt",  &SCCaloJet_pt_,  "SCCaloJet_pt[nSCCaloJet]/F");
   ntuple_->Branch("SCCaloJet_eta", &SCCaloJet_eta_, "SCCaloJet_eta[nSCCaloJet]/F");
   ntuple_->Branch("SCCaloJet_phi", &SCCaloJet_phi_, "SCCaloJet_phi[nSCCaloJet]/F");
