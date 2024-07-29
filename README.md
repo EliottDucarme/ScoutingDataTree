@@ -20,3 +20,10 @@ voms-proxy-init --voms cms # -- to load exmaple RAW file
 cmsRun ProduceTree.py sampleType=ScoutingMuon2018 >&ProduceTree.log&
 ```
 
+### submit via CRAB
+
+```bash
+cd ../CRAB
+python crabcfg_2018Data.py
+```
+
