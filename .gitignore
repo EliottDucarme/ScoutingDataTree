@@ -1,0 +1,4 @@
+TreeProducer/CRAB/CRABDir/*
+*.root
+*.pyc
+*.log

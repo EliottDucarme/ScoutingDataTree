@@ -8,7 +8,7 @@ def GetArgument(sampleType):
 
     if sampleType == "ScoutingMuon2018":
         # exampleEDMFile = '/store/data/Run2018A/ScoutingCaloMuon/RAW/v1/000/316/377/00000/6AAB14C9-B058-E811-B4CC-FA163EBBDB1E.root' # -- 9MB with 4114 events
-        exampleEDMFile = '/store/data/Run2018D/ScoutingCaloMuon/RAW/v1/000/325/170/00000/29C6126D-C33D-2744-B4E8-92637A8EDE74.root'
+        exampleEDMFile = ' /store/data/Run2018D/ScoutingCaloMuon/RAW/v1/000/325/097/00000/1ADBF05C-CB55-7947-9795-F5E1FA5760EA.root'
         globalTag = '101X_dataRun2_HLT_v7'
         isMC = False
         isMiniAOD = False

@@ -121,6 +121,7 @@ private:
   // -- L1 flags
   bool   L1_DoubleMu_15_7_;
   bool   L1_DoubleMu4p5_SQ_OS_dR_Max1p2_;
+  bool   L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7;
 
   // -- HLT flags
   bool   DST_DoubleMu1_noVtx_CaloScouting_;
@@ -302,6 +303,7 @@ void ScoutingDataTreeProducer::Init()
   // -- L1 flags
   L1_DoubleMu_15_7_ = false;
   L1_DoubleMu4p5_SQ_OS_dR_Max1p2_ = false;
+  L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7 = false;
 
   // -- HLT flags
   DST_DoubleMu1_noVtx_CaloScouting_ = false;
@@ -431,6 +433,7 @@ void ScoutingDataTreeProducer::Make_Branch()
 
   ntuple_->Branch("L1_DoubleMu_15_7",               &L1_DoubleMu_15_7_,               "L1_DoubleMu_15_7/O");
   ntuple_->Branch("L1_DoubleMu4p5_SQ_OS_dR_Max1p2", &L1_DoubleMu4p5_SQ_OS_dR_Max1p2_, "L1_DoubleMu4p5_SQ_OS_dR_Max1p2/O");
+  ntuple_->Branch("L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7", &L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7, "L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7/O");
 
   ntuple_->Branch("DST_DoubleMu1_noVtx_CaloScouting",            &DST_DoubleMu1_noVtx_CaloScouting_,            "DST_DoubleMu1_noVtx_CaloScouting/O");
   ntuple_->Branch("DST_DoubleMu3_noVtx_CaloScouting_Monitoring", &DST_DoubleMu3_noVtx_CaloScouting_Monitoring_, "DST_DoubleMu3_noVtx_CaloScouting_Monitoring/O");
@@ -805,6 +808,9 @@ void ScoutingDataTreeProducer::Set_L1BitAndPrescaleInfo() {
 
   L1GtUtils_->getFinalDecisionByName("L1_DoubleMu4p5_SQ_OS_dR_Max1p2", L1_DoubleMu4p5_SQ_OS_dR_Max1p2_);
   // L1GtUtils_->getPrescaleByName("L1_DoubleMu4p5_SQ_OS_dR_Max1p2", L1_DoubleMu4p5_SQ_OS_dR_Max1p2_PS_);
+
+  L1GtUtils_->getFinalDecisionByName("L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7", L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7);
+  // L1GtUtils_->getPrescaleByName("L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7", L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7_PS_);
 }
 
 void ScoutingDataTreeProducer::GetMuonIndex_AssociatedToVertex(const edm::Event& iEvent, const ScoutingVertex& vtx, int theVtxIndex, int& index1_mu, int& index2_mu) {
