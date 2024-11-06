@@ -12,22 +12,29 @@ options.register('sampleType',
                   "none", # default value
                   VarParsing.multiplicity.singleton, # singleton or list
                   VarParsing.varType.string,         # string, int, or float
-                  "Sample type defined in ScoutingDataTree/TreeProducer/NtuplerArgument.py")
+                  "Sample type defined in ScoutingDataTree/TreeProducer/python/NtuplerArgument.py")
 
 options.parseArguments()
 
-print "input sample type = ", options.sampleType
+print ("input sample type = ", options.sampleType)
 
 from ScoutingDataTree.TreeProducer.NtuplerArgument import GetArgument
 theExampleFile, theGlobalTag, isMC, isMiniAOD = GetArgument( options.sampleType )
 
-print "   [example file] ", theExampleFile
-print "   [global tag]   ", theGlobalTag
-print "   [isMC]         ", isMC
-print "   [isMiniAOD]    ", isMiniAOD
-print ""
+print ("   [example file] ", theExampleFile)
+print ("   [global tag]   ", theGlobalTag)
+print ("   [isMC]         ", isMC)
+print ("   [isMiniAOD]    ", isMiniAOD)
+print ("")
 
 process = cms.Process("TreeProducer")
+process.load("FWCore.MessageService.MessageLogger_cfi")
+process.options = cms.untracked.PSet(
+    wantSummary = cms.untracked.bool(True),
+    # TryToContinue = cms.untracked.vstring('ProductNotFound')
+)
+process.MessageLogger.cerr.FwkSummary.reportEvery = 1000
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(theExampleFile), # -- @ KNU
@@ -37,15 +44,15 @@ process.source = cms.Source("PoolSource",
 
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(10000))
 
-process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
-process.GlobalTag.globaltag = theGlobalTag
+process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
+from Configuration.AlCa.GlobalTag import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, theGlobalTag, '')
 
 process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff")
 process.load('Configuration.Geometry.GeometryRecoDB_cff')
 
 process.TFileService = cms.Service("TFileService",
   fileName = cms.string("ntuple.root"),
-  closeFileFast = cms.untracked.bool(False),
 )
 
 # -- produce PAT trigger object (to use the trigger information with a pre-defined format)
@@ -70,25 +77,25 @@ process.load('PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff')
 
 process.DYTree = cms.EDAnalyzer('ScoutingDataTreeProducer',
   # L1Muon                = cms.untracked.InputTag("gmtStage2Digis", "Muon", "RECO"),
-  L1Muon                = cms.untracked.InputTag("gmtStage2Digis", "Muon"),
-  globalAlgBlk          = cms.untracked.InputTag("gtStage2Digis"),
+  L1Muon                = cms.InputTag("gmtStage2Digis", "Muon"),
+  globalAlgBlk          = cms.InputTag("gtStage2Digis"),
+  AlgInputTag           = cms.InputTag("gtStage2Digis"),
   l1tAlgBlkInputTag     = cms.InputTag("gtStage2Digis"), # -- for L1TGlobalUtil
   l1tExtBlkInputTag     = cms.InputTag("gtStage2Digis"), # -- for L1TGlobalUtil
   ReadPrescalesFromFile = cms.bool( False ),             # -- for L1TGlobalUtil
-  triggerResults        = cms.untracked.InputTag("TriggerResults", "", "HLT"),
-  # triggerEvent          = cms.untracked.InputTag("hltTriggerSummaryAOD"), # -- for the trigger objects in AOD: will be skipped if the collection is not available (e.g. RAW)
+  triggerResults        = cms.InputTag("TriggerResults", "", "HLT"),
+  # triggerEvent          = cms.InputTag("hltTriggerSummaryAOD"), # -- for the trigger objects in AOD: will be skipped if the collection is not available (e.g. RAW)
 
-  SCDimuonVtx      = cms.untracked.InputTag("hltScoutingMuonPackerCalo",              "displacedVtx", "HLT"),
-  SCPixelVtx       = cms.untracked.InputTag("hltScoutingPrimaryVertexPacker",         "primaryVtx",   "HLT"),
-  SCPixelVtxNearMu = cms.untracked.InputTag("hltScoutingPrimaryVertexPackerCaloMuon", "primaryVtx",   "HLT"),
+  SCPrimaryVtx      = cms.InputTag("hltScoutingPrimaryVertexPacker",  "primaryVtx",   "HLT"),
+  SCDisplacedVtx    = cms.InputTag("hltScoutingMuonPacker",           "displacedVtx", "HLT"),
 
-  SCMuon           = cms.untracked.InputTag("hltScoutingMuonPackerCalo"),
-  SCCaloJet        = cms.untracked.InputTag("hltScoutingCaloPacker"),
-  SCCaloMETPhi     = cms.untracked.InputTag("hltScoutingCaloPacker", "caloMetPhi", "HLT"),
-  SCCaloMETPt      = cms.untracked.InputTag("hltScoutingCaloPacker", "caloMetPt", "HLT"),
-  SCRho            = cms.untracked.InputTag("hltScoutingCaloPacker", "rho", "HLT"),
+  SCMuon           = cms.InputTag("hltScoutingMuonPacker"),
+  SCPFJet          = cms.InputTag("hltScoutingPFPacker"),
+  SCMETPhi         = cms.InputTag("hltScoutingPFPacker", "METPhi", "HLT"),
+  SCMETPt          = cms.InputTag("hltScoutingPFPacker", "METPt", "HLT"),
+  SCRho            = cms.InputTag("hltScoutingPFPacker", "rho", "HLT"),
 
-  # triggerObject_L3MuonNoVtx = cms.untracked.InputTag("IterL3MuonCandidatesNoVtx"),
+  # triggerObject_L3MuonNoVtx = cms.InputTag("IterL3MuonCandidatesNoVtx"),
 )
 
 # RAW data tier: RAWtoDigi step is needed to retrieve L1 information

@@ -6,7 +6,13 @@ def GetArgument(sampleType):
     isMC = ''
     isMiniAOD = ''
 
-    if sampleType == "ScoutingMuon2018":
+    if sampleType == "ScoutingMuon2022":
+        exampleEDMFile = '/store/data/Run2022F/ScoutingPFRun3/RAW/v1/000/361/443/00000/088333f1-7a1e-474f-942b-76e86152b73a.root'
+        globalTag = '124X_dataRun3_Prompt_v4'
+        isMC = False
+        isMiniAOD = False
+
+    elif sampleType == "ScoutingMuon2018":
         # exampleEDMFile = '/store/data/Run2018A/ScoutingCaloMuon/RAW/v1/000/316/377/00000/6AAB14C9-B058-E811-B4CC-FA163EBBDB1E.root' # -- 9MB with 4114 events
         exampleEDMFile = '/store/data/Run2018D/ScoutingCaloMuon/RAW/v1/000/325/170/00000/29C6126D-C33D-2744-B4E8-92637A8EDE74.root'
         globalTag = '101X_dataRun2_HLT_v7'
@@ -58,7 +64,7 @@ def GetArgument(sampleType):
          isMiniAOD = True
 
     else:
-        print "[GetArgument] type = %s is not available sample type" % (sampleType)
+        print("[GetArgument] type = %s is not available sample type" %(sampleType))
 
 
     return exampleEDMFile, globalTag, isMC, isMiniAOD
