@@ -130,9 +130,9 @@ private:
   bool   L1_DoubleMu8_SQ_;
 
   // -- HLT flags
-  bool   DST_DoubleMu1_noVtx_CaloScouting_;
-  bool   DST_DoubleMu3_noVtx_CaloScouting_Monitoring_;
-  bool   DST_DoubleMu3_noVtx_CaloScouting_;
+  bool   DST_Physics_;
+  bool   DST_Run3_PFScoutingPixelTracking_;
+  bool   DST_HLTMuon_Run3_PFScoutingPixelTracking_;
   bool   HLT_IsoMu24_;
 
   // -- HLT objects
@@ -310,9 +310,9 @@ void ScoutingDataTreeProducer::Init()
   L1_DoubleMu8_SQ_ = false;
 
   // -- HLT flags
-  DST_DoubleMu1_noVtx_CaloScouting_ = false;
-  DST_DoubleMu3_noVtx_CaloScouting_Monitoring_ = false;
-  DST_DoubleMu3_noVtx_CaloScouting_ = false;
+  DST_Physics_ = false;
+  DST_Run3_PFScoutingPixelTracking_ = false;
+  DST_HLTMuon_Run3_PFScoutingPixelTracking_ = false;
   HLT_IsoMu24_ = false;
 
   // -- HLT objects
@@ -435,7 +435,9 @@ void ScoutingDataTreeProducer::Make_Branch()
   ntuple_->Branch("L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7", &L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7_, "L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7/O");
   ntuple_->Branch("L1_DoubleMu8_SQ", &L1_DoubleMu8_SQ_, "L1_DoubleMu8_SQ/O");
 
-  ntuple_->Branch("DST_DoubleMu3_noVtx_CaloScouting",            &DST_DoubleMu3_noVtx_CaloScouting_,            "DST_DoubleMu3_noVtx_CaloScouting/O");
+  ntuple_->Branch("DST_HLTMuon_Run3_PFScoutingPixelTracking",            &DST_HLTMuon_Run3_PFScoutingPixelTracking_,            "DST_HLTMuon_Run3_PFScoutingPixelTracking/O");
+  ntuple_->Branch("DST_Run3_PFScoutingPixelTracking",            &DST_Run3_PFScoutingPixelTracking_,            "DST_Run3_PFScoutingPixelTracking/O");
+  ntuple_->Branch("DST_Physics",            &DST_Physics_,            "DST_Physics/O");
 
   // ntuple_->Branch("nTrigObj", &nTrigObj_, "nTrigObj/I");
   // ntuple_->Branch("TrigObj_pt",  &TrigObj_pt_, "TrigObj_pt[nTrigObj]/F");
@@ -574,9 +576,9 @@ void ScoutingDataTreeProducer::SetTrue_HLTBitInfo(const std::string &pathName) {
   // cout << "[SetTrue_HLTBitInfo] pathName = " << pathName << endl;
 
   // -- check up to "_v": without this, the other triggers can be mixed (e.g. IsoMu24_XX_v triggers -> can be added in IsoMu24)
-  if( pathName.find("DST_DoubleMu1_noVtx_CaloScouting_v") != std::string::npos )            DST_DoubleMu1_noVtx_CaloScouting_ = true;
-  if( pathName.find("DST_DoubleMu3_noVtx_CaloScouting_Monitoring_v") != std::string::npos ) DST_DoubleMu3_noVtx_CaloScouting_Monitoring_ = true;
-  if( pathName.find("DST_DoubleMu3_noVtx_CaloScouting_v") != std::string::npos )            DST_DoubleMu3_noVtx_CaloScouting_ = true;
+  if( pathName.find("DST_Physics_v") != std::string::npos )                                 DST_Physics_ = true;
+  if( pathName.find("DST_Run3_PFScoutingPixelTracking_v") != std::string::npos ) DST_Run3_PFScoutingPixelTracking_ = true;
+  if( pathName.find("DST_HLTMuon_Run3_PFScoutingPixelTracking_v") != std::string::npos )    DST_HLTMuon_Run3_PFScoutingPixelTracking_ = true;
   if( pathName.find("HLT_IsoMu24_v") != std::string::npos )                                 HLT_IsoMu24_ = true;
 }
 
