@@ -56,12 +56,12 @@ using namespace edm;
 class ScoutingDataTreeProducer : public edm::one::EDAnalyzer<edm::one::SharedResources>{
 public:
   explicit ScoutingDataTreeProducer(const edm::ParameterSet&);
-  ~ScoutingDataTreeProducer() override;
+  ~ScoutingDataTreeProducer();
 
   // static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 private:
-  void beginJob() override;
   void analyze( const edm::Event&, const edm::EventSetup& );
+  void beginJob();
   void endJob();
   void beginRun( const edm::Run&, const edm::EventSetup& );
   void endRun( const edm::Run&, const edm::EventSetup& );
@@ -154,7 +154,7 @@ private:
   int   SCPrimaryVtx_nDOF_[arrSize_];
   int   SCPrimaryVtx_muonIndex1_[arrSize_];
   int   SCPrimaryVtx_muonIndex2_[arrSize_];
-  bool   SCPrimaryVtx_isValid_[arrSize_];
+  bool  SCPrimaryVtx_isValid_[arrSize_];
 
   // -- displaced vertex information
   unsigned int nSCDisplacedVtx_;
@@ -230,21 +230,21 @@ private:
 };
 
 ScoutingDataTreeProducer::ScoutingDataTreeProducer(const edm::ParameterSet& iConfig):
-triggerResultsTag       (iConfig.getParameter<edm::InputTag>("triggerResults")),
-t_L1Muon_               ( consumes< l1t::MuonBxCollection  >         (iConfig.getParameter<edm::InputTag>("L1Muon")) ),
-t_globalAlgBlk_         ( consumes< BXVector< GlobalAlgBlk > >       (iConfig.getParameter<edm::InputTag>("globalAlgBlk")) ),
-t_triggerResults_       ( consumes< edm::TriggerResults >            (iConfig.getParameter<edm::InputTag>("triggerResults")) ),
-t_SCPrimaryVtx_         ( consumes< std::vector<Run3ScoutingVertex> >    (iConfig.getParameter<edm::InputTag>("SCPrimaryVtx")) ),
-t_SCDisplacedVtx_       ( consumes< std::vector<Run3ScoutingVertex> >    (iConfig.getParameter<edm::InputTag>("SCDisplacedVtx")) ),
-t_SCMuon_               ( consumes< std::vector<Run3ScoutingMuon> >      (iConfig.getParameter<edm::InputTag>("SCMuon")) ),
-t_SCPFJet_            ( consumes< std::vector<Run3ScoutingPFJet> >   (iConfig.getParameter<edm::InputTag>("SCPFJet")) ),
-t_SCMETPhi_         ( consumes< double >                         (iConfig.getParameter<edm::InputTag>("SCMETPhi")) ),
-t_SCMETPt_          ( consumes< double >                         (iConfig.getParameter<edm::InputTag>("SCMETPt")) ),
-t_SCRho_                ( consumes< double >                         (iConfig.getParameter<edm::InputTag>("SCRho")) )
+triggerResultsTag       (iConfig.getUntrackedParameter<edm::InputTag>("triggerResults")),
+t_L1Muon_               ( consumes< l1t::MuonBxCollection  >         (iConfig.getUntrackedParameter<edm::InputTag>("L1Muon")) ),
+t_globalAlgBlk_         ( consumes< BXVector< GlobalAlgBlk > >       (iConfig.getUntrackedParameter<edm::InputTag>("globalAlgBlk")) ),
+t_triggerResults_       ( consumes< edm::TriggerResults >            (iConfig.getUntrackedParameter<edm::InputTag>("triggerResults")) ),
+t_SCPrimaryVtx_         ( consumes< std::vector<Run3ScoutingVertex> >    (iConfig.getUntrackedParameter<edm::InputTag>("SCPrimaryVtx")) ),
+t_SCDisplacedVtx_       ( consumes< std::vector<Run3ScoutingVertex> >    (iConfig.getUntrackedParameter<edm::InputTag>("SCDisplacedVtx")) ),
+t_SCMuon_               ( consumes< std::vector<Run3ScoutingMuon> >      (iConfig.getUntrackedParameter<edm::InputTag>("SCMuon")) ),
+t_SCPFJet_            ( consumes< std::vector<Run3ScoutingPFJet> >   (iConfig.getUntrackedParameter<edm::InputTag>("SCPFJet")) ),
+t_SCMETPhi_         ( consumes< double >                         (iConfig.getUntrackedParameter<edm::InputTag>("SCMETPhi")) ),
+t_SCMETPt_          ( consumes< double >                         (iConfig.getUntrackedParameter<edm::InputTag>("SCMETPt")) ),
+t_SCRho_                ( consumes< double >                         (iConfig.getUntrackedParameter<edm::InputTag>("SCRho")) )
 // t_trigObj_L3MuonNoVtx_ ( consumes< std::vector<pat::TriggerObjectStandAlone> >   (iConfig.getParameter<edm::InputTag>("triggerObject_L3MuonNoVtx")) ),
 {
   usesResource("TFileService");
-  algInputTag_ = iConfig.getParameter<edm::InputTag>("AlgInputTag");
+  algInputTag_ = iConfig.getUntrackedParameter<edm::InputTag>("AlgInputTag");
   extInputTag_ = iConfig.getParameter<edm::InputTag>("l1tExtBlkInputTag");
   algToken_ = consumes<BXVector<GlobalAlgBlk>>(algInputTag_);
   L1GtUtils_ = std::make_unique<l1t::L1TGlobalUtil>(iConfig, consumesCollector(), *this, algInputTag_, extInputTag_, l1t::UseEventSetupIn::Event);
