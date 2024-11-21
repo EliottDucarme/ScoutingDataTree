@@ -23,12 +23,12 @@ config.Data.unitsPerJob = 50
 config.Data.publication = False
 # config.Data.ignoreLocality = True
 # config.Site.whitelist = ['T2_KR_*', 'T2_US_*', 'T2_IT_*', 'T3_IT_*'] # -- mandatory for ignoreLocality option
-config.Site.storageSite = 'T2_BE_IIHE'
+config.Site.storageSite = 'T2_CH_CERN'
 
 config.Data.lumiMask = './JSON/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt'
 
 version = 'v02_2nd'
-config.Data.outLFNDirBase = '/store/user/kplee/DYScoutingTree_%s' % version
+config.Data.outLFNDirBase = '/store/user/educarme/ScoutingTree_%s' % version
 
 config.JobType.allowUndistributedCMSSW = True
 

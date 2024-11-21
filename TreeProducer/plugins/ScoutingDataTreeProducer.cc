@@ -126,8 +126,12 @@ private:
   // -- L1 flags
   bool   L1_DoubleMu_15_7_;
   bool   L1_DoubleMu4p5_SQ_OS_dR_Max1p2_;
+<<<<<<< HEAD
   bool   L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7_;
   bool   L1_DoubleMu8_SQ_;
+=======
+  bool   L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7;
+>>>>>>> 631649372b7b724fa909a458f45a4b23538a066c
 
   // -- HLT flags
   bool   DST_Physics_;
@@ -306,8 +310,12 @@ void ScoutingDataTreeProducer::Init()
   // -- L1 flags
   L1_DoubleMu_15_7_ = false;
   L1_DoubleMu4p5_SQ_OS_dR_Max1p2_ = false;
+<<<<<<< HEAD
   L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7_ = false;
   L1_DoubleMu8_SQ_ = false;
+=======
+  L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7 = false;
+>>>>>>> 631649372b7b724fa909a458f45a4b23538a066c
 
   // -- HLT flags
   DST_Physics_ = false;
@@ -432,8 +440,12 @@ void ScoutingDataTreeProducer::Make_Branch()
 
   ntuple_->Branch("L1_DoubleMu_15_7",               &L1_DoubleMu_15_7_,               "L1_DoubleMu_15_7/O");
   ntuple_->Branch("L1_DoubleMu4p5_SQ_OS_dR_Max1p2", &L1_DoubleMu4p5_SQ_OS_dR_Max1p2_, "L1_DoubleMu4p5_SQ_OS_dR_Max1p2/O");
+<<<<<<< HEAD
   ntuple_->Branch("L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7", &L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7_, "L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7/O");
   ntuple_->Branch("L1_DoubleMu8_SQ", &L1_DoubleMu8_SQ_, "L1_DoubleMu8_SQ/O");
+=======
+  ntuple_->Branch("L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7", &L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7, "L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7/O");
+>>>>>>> 631649372b7b724fa909a458f45a4b23538a066c
 
   ntuple_->Branch("DST_HLTMuon_Run3_PFScoutingPixelTracking",            &DST_HLTMuon_Run3_PFScoutingPixelTracking_,            "DST_HLTMuon_Run3_PFScoutingPixelTracking/O");
   ntuple_->Branch("DST_Run3_PFScoutingPixelTracking",            &DST_Run3_PFScoutingPixelTracking_,            "DST_Run3_PFScoutingPixelTracking/O");
@@ -775,9 +787,14 @@ void ScoutingDataTreeProducer::Set_L1BitAndPrescaleInfo() {
   L1GtUtils_->getFinalDecisionByName("L1_DoubleMu4p5_SQ_OS_dR_Max1p2", L1_DoubleMu4p5_SQ_OS_dR_Max1p2_);
   // L1GtUtils_->getPrescaleByName("L1_DoubleMu4p5_SQ_OS_dR_Max1p2", L1_DoubleMu4p5_SQ_OS_dR_Max1p2_PS_);
 
+<<<<<<< HEAD
   L1GtUtils_->getFinalDecisionByName("L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7", L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7_);
   L1GtUtils_->getFinalDecisionByName("L1_DoubleMu8_SQ", L1_DoubleMu8_SQ_);
   
+=======
+  L1GtUtils_->getFinalDecisionByName("L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7", L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7);
+  // L1GtUtils_->getPrescaleByName("L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7", L1_DoubleMu4p5er2p0_SQ_OS_Mass_Min7_PS_);
+>>>>>>> 631649372b7b724fa909a458f45a4b23538a066c
 }
 
 void ScoutingDataTreeProducer::GetMuonIndex_AssociatedToVertex(const edm::Event& iEvent, const Run3ScoutingVertex& vtx, int theVtxIndex, int& index1_mu, int& index2_mu) {
